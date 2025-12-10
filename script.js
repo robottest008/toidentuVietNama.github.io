@@ -61,7 +61,34 @@ function initRSVPModalForm() {
 function initMusicPlayer() {
     const musicBtn = document.getElementById('musicBtn');
     const bgMusic = document.getElementById('bgMusic');
+    if (!musicBtn || !bgMusic) {
+        return;
+    }
     let isPlaying = false;
+    const INTRO_SKIP_SECONDS = 10;
+
+    function skipIntroIfNeeded() {
+        if (bgMusic.readyState >= 1) {
+            const duration = bgMusic.duration;
+            let skipTo = INTRO_SKIP_SECONDS;
+
+            if (Number.isFinite(duration) && duration > 0) {
+                if (duration <= INTRO_SKIP_SECONDS) {
+                    skipTo = 0;
+                } else {
+                    skipTo = INTRO_SKIP_SECONDS;
+                }
+            }
+
+            if (bgMusic.currentTime < skipTo) {
+                try {
+                    bgMusic.currentTime = skipTo;
+                } catch (error) {
+                    console.log('Unable to skip intro yet:', error);
+                }
+            }
+        }
+    }
 
     function toggleMusic() {
         if (isPlaying) {
@@ -72,6 +99,7 @@ function initMusicPlayer() {
             bgMusic.play().then(() => {
                 musicBtn.classList.add('playing');
                 musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                skipIntroIfNeeded();
             }).catch(e => {
                 console.log("Audio play failed", e);
                 alert("Vui lòng chạm vào màn hình để phát nhạc!");
@@ -82,6 +110,13 @@ function initMusicPlayer() {
 
     musicBtn.addEventListener('click', toggleMusic);
 
+    bgMusic.addEventListener('loadedmetadata', skipIntroIfNeeded);
+    bgMusic.addEventListener('play', skipIntroIfNeeded);
+    bgMusic.addEventListener('ended', () => {
+        skipIntroIfNeeded();
+        bgMusic.play();
+    });
+
     // Auto play attempt with user interaction fallback
     const playPromise = bgMusic.play();
     if (playPromise !== undefined) {
@@ -89,6 +124,7 @@ function initMusicPlayer() {
             isPlaying = true;
             musicBtn.classList.add('playing');
             musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+            skipIntroIfNeeded();
         }).catch(error => {
             // Auto-play was prevented
             console.log("Autoplay prevented");
@@ -99,6 +135,7 @@ function initMusicPlayer() {
                     isPlaying = true;
                     musicBtn.classList.add('playing');
                     musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                    skipIntroIfNeeded();
                 }
             }, { once: true });
         });
@@ -160,32 +197,6 @@ function initRSVPForm() {
         
         // Reset form
         form.reset();
-    });
-}
-
-// ===== Music Player =====
-function initMusicPlayer() {
-    const musicToggle = document.getElementById('musicToggle');
-    const playIcon = musicToggle.querySelector('.play-icon');
-    const pauseIcon = musicToggle.querySelector('.pause-icon');
-    
-    let isPlaying = false;
-    
-    // You can add an actual audio element here
-    // const audio = new Audio('path-to-your-wedding-song.mp3');
-    
-    musicToggle.addEventListener('click', function() {
-        isPlaying = !isPlaying;
-        
-        if (isPlaying) {
-            playIcon.style.display = 'none';
-            pauseIcon.style.display = 'block';
-            // audio.play();
-        } else {
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-            // audio.pause();
-        }
     });
 }
 

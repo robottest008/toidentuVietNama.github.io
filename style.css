@@ -731,36 +731,25 @@ button {
 
 .qr-container {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
-    flex-wrap: wrap;
-}
-
-.qr-box {
-    text-align: center;
-    flex: 1;
-    min-width: 150px;
-}
-
-.qr-title {
-    font-family: var(--font-serif);
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: var(--dark-color);
 }
 
 .qr-code {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 10px;
-    border: 1px solid #eee;
-    padding: 5px;
+    width: min(260px, 80%);
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
 }
 
-.bank-info {
-    font-size: 0.9rem;
+.qr-caption {
+    font-family: var(--font-serif);
+    font-size: 1rem;
     color: var(--text-light);
-    line-height: 1.4;
+    text-align: center;
+    line-height: 1.5;
+    max-width: 320px;
 }
 
 /* Calendar Styles */
