@@ -65,7 +65,7 @@ function initMusicPlayer() {
         return;
     }
     let isPlaying = false;
-    const INTRO_SKIP_SECONDS = 10;
+    const INTRO_SKIP_SECONDS = 0;
 
     function skipIntroIfNeeded() {
         if (bgMusic.readyState >= 1) {
@@ -96,10 +96,10 @@ function initMusicPlayer() {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" /></svg>';
         } else {
+            skipIntroIfNeeded();
             bgMusic.play().then(() => {
                 musicBtn.classList.add('playing');
                 musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-                skipIntroIfNeeded();
             }).catch(e => {
                 console.log("Audio play failed", e);
                 alert("Vui lòng chạm vào màn hình để phát nhạc!");
@@ -113,7 +113,7 @@ function initMusicPlayer() {
     bgMusic.addEventListener('loadedmetadata', skipIntroIfNeeded);
     bgMusic.addEventListener('play', skipIntroIfNeeded);
     bgMusic.addEventListener('ended', () => {
-        skipIntroIfNeeded();
+        bgMusic.currentTime = INTRO_SKIP_SECONDS;
         bgMusic.play();
     });
 
@@ -131,11 +131,11 @@ function initMusicPlayer() {
             // Add a one-time click listener to body to start music
             document.body.addEventListener('click', function() {
                 if (!isPlaying) {
+                    skipIntroIfNeeded();
                     bgMusic.play();
                     isPlaying = true;
                     musicBtn.classList.add('playing');
                     musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-                    skipIntroIfNeeded();
                 }
             }, { once: true });
         });
