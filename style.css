@@ -1574,7 +1574,8 @@ button {
 .heart-divider svg {
     width: 50px;
     height: 50px;
-    color: var(--text-dark);
+    color: #d32f2f; /* Red color */
+    fill: #d32f2f; /* Fill with red */
     animation: heartbeat 2s infinite;
 }
 
